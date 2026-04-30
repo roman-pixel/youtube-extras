@@ -7,11 +7,14 @@ A Chrome extension that adds missing keyboard shortcuts and UI improvements to Y
 
 ## Features
 
-| Shortcut | Action | Context |
-|----------|--------|---------|
-| `Shift+C` | Toggle comments panel | Fullscreen mode |
+All shortcuts work in fullscreen mode only and are shown as badges in the native button tooltips.
 
-More features coming soon.
+| Shortcut | Action |
+|----------|--------|
+| `Shift+C` | Toggle comments panel |
+| `Shift+L` | Like / unlike |
+| `Shift+D` | Dislike / remove dislike |
+| `Shift+S` | Share |
 
 ## Installation
 
@@ -19,27 +22,29 @@ More features coming soon.
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable **Developer mode** (top right toggle)
 4. Click **Load unpacked** and select the project folder
-5. Open YouTube, play a video, enter fullscreen and press `Shift+C`
+5. Open YouTube, play a video, enter fullscreen and try the shortcuts
 
 ## Project structure
 
 ```
-YT_extension/
+youtube-extras/
 ├── manifest.json
-├── content.js              # Entry point — initializes all modules
+├── content.js                  # Entry point — initializes all modules
 └── modules/
-    └── commentsShortcut.js # Shift+C shortcut + tooltip patch
+    ├── shortcutCore.js         # Shared utilities (fullscreen detection, tooltip watcher, shortcut registration)
+    ├── playerShortcuts.js      # All quick-action bar shortcuts
+    └── debugAutoHide.js        # Keeps player controls visible (activated via localStorage)
 ```
 
 ## Documentation
 
-- [Comments shortcut](docs/en/commentsShortcut.md)
+- [Player shortcuts](docs/en/playerShortcuts.md)
 - [Development guide](docs/en/development.md)
 
 ## Contributing
 
 Pull requests are welcome. When adding a new feature:
 1. Create a new file in `modules/`
-2. Declare an `initYourFeature()` function at the top level
-3. Call it from `content.js`
+2. Use `registerFullscreenShortcut()` and `initTooltipWatcher()` from `shortcutCore.js`
+3. Call your init function from `content.js`
 4. Add documentation to `docs/en/` and `docs/ru/`

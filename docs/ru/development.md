@@ -13,37 +13,28 @@
 
 ## Добавление нового модуля
 
-1. Создать `modules/yourFeature.js` с функцией `initYourFeature()` на верхнем уровне
-2. Добавить файл в `content_scripts` в `manifest.json`:
+1. Создать `modules/yourFeature.js`
+2. Использовать `registerFullscreenShortcut(keyTest, action)` из `shortcutCore.js` для привязки клавиш
+3. Передать функции поиска кнопок в `initTooltipWatcher()` для бейджей в тултипах (вызывается один раз в последнем модуле, которому это нужно)
+4. Добавить файл в `content_scripts` в `manifest.json` после `shortcutCore.js`:
    ```json
-   "js": ["modules/commentsShortcut.js", "modules/yourFeature.js", "content.js"]
+   "js": ["modules/shortcutCore.js", "modules/playerShortcuts.js", "modules/yourFeature.js", "content.js"]
    ```
-3. Вызвать `initYourFeature()` в `content.js`
-4. Добавить документацию в `docs/en/yourFeature.md` и `docs/ru/yourFeature.md`
+5. Вызвать функцию инициализации из `content.js`
+6. Добавить документацию в `docs/en/yourFeature.md` и `docs/ru/yourFeature.md`
 
-## Debug-модуль
+## Debug-режим
 
-В разработке полезно отключить автоскрытие контролов плеера YouTube. Для этого создать следующий файл локально — он добавлен в `.gitignore` и не попадёт в репозиторий:
+`modules/debugAutoHide.js` отключает автоскрытие контролов плеера YouTube во время разработки. Файл всегда присутствует в репозитории, но активируется только при наличии флага в `localStorage`.
 
-**`modules/debugAutoHide.js`**
+**Включить** (выполнить в консоли на странице YouTube):
 ```js
-function initDebugAutoHide() {
-  const player = document.querySelector('#movie_player');
-  if (!player) return;
-
-  new MutationObserver(() => {
-    if (player.classList.contains('ytp-autohide')) {
-      player.classList.remove('ytp-autohide');
-    }
-  }).observe(player, { attributeFilter: ['class'] });
-}
+localStorage.setItem("ytExtrasDebug", "1")
 ```
 
-Затем зарегистрировать его в `manifest.json` и `content.js`:
-```json
-"js": ["modules/commentsShortcut.js", "modules/debugAutoHide.js", "content.js"]
-```
+**Выключить:**
 ```js
-initCommentsShortcut();
-initDebugAutoHide();
+localStorage.removeItem("ytExtrasDebug")
 ```
+
+После переключения перезагрузить страницу.

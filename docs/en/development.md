@@ -13,37 +13,28 @@
 
 ## Adding a new module
 
-1. Create `modules/yourFeature.js` with an `initYourFeature()` function at the top level
-2. Add the file to `content_scripts` in `manifest.json`:
+1. Create `modules/yourFeature.js`
+2. Use `registerFullscreenShortcut(keyTest, action)` from `shortcutCore.js` to bind keys
+3. Pass button finders to `initTooltipWatcher()` for tooltip badges (called once in the last module that needs it)
+4. Add the file to `content_scripts` in `manifest.json` after `shortcutCore.js`:
    ```json
-   "js": ["modules/commentsShortcut.js", "modules/yourFeature.js", "content.js"]
+   "js": ["modules/shortcutCore.js", "modules/playerShortcuts.js", "modules/yourFeature.js", "content.js"]
    ```
-3. Call `initYourFeature()` in `content.js`
-4. Add documentation to `docs/en/yourFeature.md` and `docs/ru/yourFeature.md`
+5. Call your init function from `content.js`
+6. Add documentation to `docs/en/yourFeature.md` and `docs/ru/yourFeature.md`
 
-## Debug module
+## Debug mode
 
-For development it is useful to disable the YouTube player auto-hide behavior (which hides controls after inactivity). Create the following file locally — it is listed in `.gitignore` and will not be committed:
+`modules/debugAutoHide.js` prevents the YouTube player controls from auto-hiding during development. It is always present in the repo but only activates when a `localStorage` flag is set.
 
-**`modules/debugAutoHide.js`**
+**Enable** (run in the YouTube page console):
 ```js
-function initDebugAutoHide() {
-  const player = document.querySelector('#movie_player');
-  if (!player) return;
-
-  new MutationObserver(() => {
-    if (player.classList.contains('ytp-autohide')) {
-      player.classList.remove('ytp-autohide');
-    }
-  }).observe(player, { attributeFilter: ['class'] });
-}
+localStorage.setItem("ytExtrasDebug", "1")
 ```
 
-Then register it in `manifest.json` and `content.js`:
-```json
-"js": ["modules/commentsShortcut.js", "modules/debugAutoHide.js", "content.js"]
-```
+**Disable:**
 ```js
-initCommentsShortcut();
-initDebugAutoHide();
+localStorage.removeItem("ytExtrasDebug")
 ```
+
+Reload the page after toggling.
