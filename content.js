@@ -1,1 +1,1 @@
-initCommentsShortcut();
+initPlayerShortcuts();

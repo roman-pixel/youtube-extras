@@ -6,7 +6,11 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*"],
-      "js": ["modules/commentsShortcut.js", "content.js"],
+      "js": [
+        "modules/shortcutCore.js",
+        "modules/playerShortcuts.js",
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ]
