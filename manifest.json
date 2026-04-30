@@ -9,6 +9,7 @@
       "js": [
         "modules/shortcutCore.js",
         "modules/playerShortcuts.js",
+        "modules/debugAutoHide.js",
         "content.js"
       ],
       "run_at": "document_idle"
