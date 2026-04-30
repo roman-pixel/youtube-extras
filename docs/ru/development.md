@@ -5,25 +5,25 @@
 
 ## Настройка
 
-1. Склонируй репозиторий
-2. Открой `chrome://extensions/` в Chrome
-3. Включи **Режим разработчика**
-4. Нажми **Загрузить распакованное** → выбери папку проекта
-5. После любого изменения кода нажми кнопку перезагрузки (↺) на карточке расширения
+1. Склонировать репозиторий
+2. Открыть `chrome://extensions/` в Chrome
+3. Включить **Режим разработчика**
+4. Нажать **Загрузить распакованное** → выбрать папку проекта
+5. После любого изменения кода нажать кнопку перезагрузки (↺) на карточке расширения
 
 ## Добавление нового модуля
 
-1. Создай `modules/yourFeature.js` с функцией `initYourFeature()` на верхнем уровне
-2. Добавь файл в `content_scripts` в `manifest.json`:
+1. Создать `modules/yourFeature.js` с функцией `initYourFeature()` на верхнем уровне
+2. Добавить файл в `content_scripts` в `manifest.json`:
    ```json
    "js": ["modules/commentsShortcut.js", "modules/yourFeature.js", "content.js"]
    ```
-3. Вызови `initYourFeature()` в `content.js`
-4. Добавь документацию в `docs/en/yourFeature.md` и `docs/ru/yourFeature.md`
+3. Вызвать `initYourFeature()` в `content.js`
+4. Добавить документацию в `docs/en/yourFeature.md` и `docs/ru/yourFeature.md`
 
 ## Debug-модуль
 
-В разработке полезно отключить автоскрытие контролов плеера YouTube. Создай следующий файл локально — он добавлен в `.gitignore` и не попадёт в репозиторий:
+В разработке полезно отключить автоскрытие контролов плеера YouTube. Для этого создать следующий файл локально — он добавлен в `.gitignore` и не попадёт в репозиторий:
 
 **`modules/debugAutoHide.js`**
 ```js
@@ -39,7 +39,7 @@ function initDebugAutoHide() {
 }
 ```
 
-Затем зарегистрируй в `manifest.json` и `content.js`:
+Затем зарегистрировать его в `manifest.json` и `content.js`:
 ```json
 "js": ["modules/commentsShortcut.js", "modules/debugAutoHide.js", "content.js"]
 ```
