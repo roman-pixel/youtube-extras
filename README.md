@@ -14,7 +14,6 @@ All shortcuts work in fullscreen mode only and are shown as badges in the native
 | `Shift+C` | Toggle comments panel |
 | `Shift+L` | Like / unlike |
 | `Shift+D` | Dislike / remove dislike |
-| `Shift+S` | Share |
 
 ## Installation
 

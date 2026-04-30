@@ -1,6 +1,6 @@
 /**
  * @module shortcutCore
- * Shared utilities for fullscreen shortcut modules.
+ * Shared utilities for shortcut modules.
  */
 
 const _FULLSCREEN_PANEL =
@@ -28,11 +28,12 @@ function createShortcutBadge(text) {
 }
 
 /**
- * Registers a keydown listener that fires only in fullscreen and outside text inputs.
+ * Registers a keydown listener that fires outside text inputs.
+ * action() must return true if it handled the event — only then is the event suppressed.
  * @param {function(KeyboardEvent): boolean} keyTest
- * @param {function(): void} action
+ * @param {function(): boolean} action
  */
-function registerFullscreenShortcut(keyTest, action) {
+function registerShortcut(keyTest, action) {
   document.addEventListener(
     "keydown",
     (e) => {
@@ -44,10 +45,9 @@ function registerFullscreenShortcut(keyTest, action) {
         document.activeElement?.isContentEditable
       )
         return;
-      if (!isFullscreen()) return;
+      if (!action()) return;
       e.preventDefault();
       e.stopPropagation();
-      action();
     },
     true,
   );
