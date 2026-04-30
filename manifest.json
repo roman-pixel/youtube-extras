@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Extras",
+  "version": "1.0",
+  "description": "Extra keyboard shortcuts for YouTube",
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["modules/commentsShortcut.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
