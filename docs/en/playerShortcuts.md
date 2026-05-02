@@ -14,6 +14,7 @@ Adds keyboard shortcuts for YouTube player actions. Works in both fullscreen and
 | `Shift+C` | Toggle comments panel / scroll to comments | ✓ | ✓ |
 | `Shift+L` | Like / unlike | ✓ | ✓ |
 | `Shift+D` | Dislike / remove dislike | ✓ | ✓ |
+| `Shift+I` | Toggle description panel / scroll to description | ✓ | ✓ |
 
 All shortcuts work on any keyboard layout — `e.code` (physical key position) is used instead of `e.key` (character).
 
@@ -30,6 +31,9 @@ Each shortcut clicks the native YouTube button rather than manipulating DOM stat
 
 **Comments in normal mode**
 When not in fullscreen, `Shift+C` toggles between the comments section and the top of the page. If `#comments` is already in the upper half of the viewport (i.e. the user has scrolled to comments), the shortcut scrolls back to `#primary`. Otherwise it scrolls down to `#comments`.
+
+**Description (`Shift+I`)**
+In fullscreen, opens the structured description engagement panel via `yt-player-overlay-video-details-renderer`. If the panel is already expanded (`visibility="ENGAGEMENT_PANEL_VISIBILITY_EXPANDED"`), it is closed via its visibility button. In normal mode the shortcut expands the inline description (`#description-inline-expander #expand`) and scrolls to it; if the description is already in the upper half of the viewport, it scrolls back to `#primary`.
 
 **Tooltip badges**
 YouTube uses a single shared `yt-popover` for all button tooltips. A `MutationObserver` watches it. Hover tracking via `mouseover` identifies which button is active — so badge injection is language-independent and works regardless of button state (e.g. "Like" vs "Remove like"). Badges appear in both fullscreen and normal mode.

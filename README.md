@@ -7,13 +7,14 @@ A Chrome extension that adds missing keyboard shortcuts and UI improvements to Y
 
 ## Features
 
-All shortcuts work in fullscreen mode only and are shown as badges in the native button tooltips.
+All shortcuts work in both fullscreen and normal mode and are shown as badges in the native button tooltips.
 
 | Shortcut | Action |
 |----------|--------|
-| `Shift+C` | Toggle comments panel |
+| `Shift+C` | Toggle comments panel / scroll to comments |
 | `Shift+L` | Like / unlike |
 | `Shift+D` | Dislike / remove dislike |
+| `Shift+I` | Toggle description / scroll to description |
 
 ## Installation
 

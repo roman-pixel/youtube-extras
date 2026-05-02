@@ -1,7 +1,7 @@
 /**
  * @module playerShortcuts
  * Shortcuts for quick-action bar (fullscreen) and watch-page actions (normal mode):
- * Shift+C — Comments, Shift+L — Like, Shift+D — Dislike
+ * Shift+C — Comments, Shift+L — Like, Shift+D — Dislike, Shift+I — Description
  */
 
 const COMMENTS_SVG_START = "M1 6a4 4 0 014-4h14a4 4 0 014 4v10";
@@ -82,6 +82,36 @@ function initPlayerShortcuts() {
           ?.scrollIntoView({ behavior: "smooth" });
       } else {
         comments.scrollIntoView({ behavior: "smooth" });
+      }
+      return true;
+    },
+  );
+
+  registerShortcut(
+    (e) => shiftOnly(e) && e.code === "KeyI",
+    () => {
+      if (isFullscreen()) {
+        const panel = document.querySelector(
+          'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-structured-description"]',
+        );
+        const isOpen = panel?.getAttribute("visibility") === "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED";
+        if (isOpen) {
+          panel.querySelector("#visibility-button button")?.click();
+          return true;
+        }
+        const btn = document.querySelector("yt-player-overlay-video-details-renderer");
+        if (!btn) return false;
+        btn.click();
+        return true;
+      }
+      const description = document.querySelector("ytd-watch-metadata #description");
+      if (!description) return false;
+      const atDescription = description.getBoundingClientRect().top < window.innerHeight / 2;
+      if (atDescription) {
+        document.querySelector("#primary")?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        document.querySelector("#description-inline-expander #expand")?.click();
+        description.scrollIntoView({ behavior: "smooth" });
       }
       return true;
     },
