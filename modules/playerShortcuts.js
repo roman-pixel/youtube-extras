@@ -6,6 +6,11 @@
 
 const COMMENTS_SVG_START = "M1 6a4 4 0 014-4h14a4 4 0 014 4v10";
 
+const PLAYER_BUTTONS = [
+  { selector: "like-button-view-model button",    key: "KeyL", badge: "Shift+L" },
+  { selector: "dislike-button-view-model button", key: "KeyD", badge: "Shift+D" },
+];
+
 function findInQuickActions(selector) {
   return (
     document
@@ -16,6 +21,10 @@ function findInQuickActions(selector) {
 
 function findInPage(selector) {
   return document.querySelector("#actions")?.querySelector(selector) ?? null;
+}
+
+function findButton(selector) {
+  return findInQuickActions(selector) || findInPage(selector);
 }
 
 function findCommentsButton() {
@@ -71,37 +80,18 @@ function initPlayerShortcuts() {
     },
   );
 
-  registerShortcut(
-    (e) => shiftOnly(e) && e.code === "KeyL",
-    () =>
-      clickFirst(
-        () => findInQuickActions("like-button-view-model button"),
-        () => findInPage("like-button-view-model button"),
-      ),
-  );
-
-  registerShortcut(
-    (e) => shiftOnly(e) && e.code === "KeyD",
-    () =>
-      clickFirst(
-        () => findInQuickActions("dislike-button-view-model button"),
-        () => findInPage("dislike-button-view-model button"),
-      ),
-  );
+  for (const { selector, key } of PLAYER_BUTTONS) {
+    registerShortcut(
+      (e) => shiftOnly(e) && e.code === key,
+      () => clickFirst(() => findButton(selector)),
+    );
+  }
 
   initTooltipWatcher([
     { find: findCommentsButton, badge: "Shift+C" },
-    {
-      find: () =>
-        findInQuickActions("like-button-view-model button") ||
-        findInPage("like-button-view-model button"),
-      badge: "Shift+L",
-    },
-    {
-      find: () =>
-        findInQuickActions("dislike-button-view-model button") ||
-        findInPage("dislike-button-view-model button"),
-      badge: "Shift+D",
-    },
+    ...PLAYER_BUTTONS.map(({ selector, badge }) => ({
+      find: () => findButton(selector),
+      badge,
+    })),
   ]);
 }

@@ -14,14 +14,16 @@
 ## Adding a new module
 
 1. Create `modules/yourFeature.js`
-2. Use `registerFullscreenShortcut(keyTest, action)` from `shortcutCore.js` to bind keys
+2. Use `registerShortcut(keyTest, action)` from `shortcutCore.js` to bind keys
 3. Pass button finders to `initTooltipWatcher()` for tooltip badges (called once in the last module that needs it)
 4. Add the file to `content_scripts` in `manifest.json` after `shortcutCore.js`:
    ```json
+   "css": ["styles/badge.css"],
    "js": ["modules/shortcutCore.js", "modules/playerShortcuts.js", "modules/yourFeature.js", "content.js"]
    ```
-5. Call your init function from `content.js`
-6. Add documentation to `docs/en/yourFeature.md` and `docs/ru/yourFeature.md`
+5. If your module injects UI elements, add styles to `styles/badge.css` or a new CSS file listed in `css`
+6. Call your init function from `content.js`
+7. Add documentation to `docs/en/yourFeature.md` and `docs/ru/yourFeature.md`
 
 ## Debug mode
 

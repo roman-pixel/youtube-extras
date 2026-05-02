@@ -14,14 +14,16 @@
 ## Добавление нового модуля
 
 1. Создать `modules/yourFeature.js`
-2. Использовать `registerFullscreenShortcut(keyTest, action)` из `shortcutCore.js` для привязки клавиш
+2. Использовать `registerShortcut(keyTest, action)` из `shortcutCore.js` для привязки клавиш
 3. Передать функции поиска кнопок в `initTooltipWatcher()` для бейджей в тултипах (вызывается один раз в последнем модуле, которому это нужно)
 4. Добавить файл в `content_scripts` в `manifest.json` после `shortcutCore.js`:
    ```json
+   "css": ["styles/badge.css"],
    "js": ["modules/shortcutCore.js", "modules/playerShortcuts.js", "modules/yourFeature.js", "content.js"]
    ```
-5. Вызвать функцию инициализации из `content.js`
-6. Добавить документацию в `docs/en/yourFeature.md` и `docs/ru/yourFeature.md`
+5. Если модуль инжектирует UI-элементы, добавить стили в `styles/badge.css` или новый CSS-файл в секцию `css`
+6. Вызвать функцию инициализации из `content.js`
+7. Добавить документацию в `docs/en/yourFeature.md` и `docs/ru/yourFeature.md`
 
 ## Debug-режим
 

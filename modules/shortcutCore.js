@@ -13,17 +13,7 @@ function isFullscreen() {
 function createShortcutBadge(text) {
   const span = document.createElement("span");
   span.textContent = text;
-  span.style.cssText = `
-    display: inline-block;
-    margin-left: 6px;
-    padding: 1px 5px;
-    border-radius: 3px;
-    background: rgba(255,255,255,0.05);
-    font-weight: bold;
-    font-size: 0.85em;
-    vertical-align: middle;
-    letter-spacing: 0.03em;
-  `;
+  span.className = "yt-extras-shortcut-badge";
   return span;
 }
 

@@ -29,9 +29,11 @@ All shortcuts work in fullscreen mode only and are shown as badges in the native
 youtube-extras/
 ├── manifest.json
 ├── content.js                  # Entry point — initializes all modules
+├── styles/
+│   └── badge.css               # Shortcut badge styles injected into YouTube pages
 └── modules/
     ├── shortcutCore.js         # Shared utilities (fullscreen detection, tooltip watcher, shortcut registration)
-    ├── playerShortcuts.js      # All quick-action bar shortcuts
+    ├── playerShortcuts.js      # All player shortcuts
     └── debugAutoHide.js        # Keeps player controls visible (activated via localStorage)
 ```
 
