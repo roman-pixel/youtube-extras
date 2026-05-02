@@ -7,7 +7,9 @@ const _FULLSCREEN_PANEL =
   'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"]';
 
 function isFullscreen() {
-  return !!document.querySelector(_FULLSCREEN_PANEL)?.hasAttribute("is-fullscreen");
+  return !!document
+    .querySelector(_FULLSCREEN_PANEL)
+    ?.hasAttribute("is-fullscreen");
 }
 
 function createShortcutBadge(text) {
@@ -85,7 +87,11 @@ function initTooltipWatcher(buttons) {
         activeBadge?.remove();
         activeBadge = null;
       }
-    }).observe(popover, { childList: true, subtree: true, characterData: true });
+    }).observe(popover, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
   }
 
   const popover = document.querySelector("yt-popover");

@@ -7,8 +7,12 @@
 const COMMENTS_SVG_START = "M1 6a4 4 0 014-4h14a4 4 0 014 4v10";
 
 const PLAYER_BUTTONS = [
-  { selector: "like-button-view-model button",    key: "KeyL", badge: "Shift+L" },
-  { selector: "dislike-button-view-model button", key: "KeyD", badge: "Shift+D" },
+  { selector: "like-button-view-model button", key: "KeyL", badge: "Shift+L" },
+  {
+    selector: "dislike-button-view-model button",
+    key: "KeyD",
+    badge: "Shift+D",
+  },
 ];
 
 function findInQuickActions(selector) {
@@ -24,7 +28,7 @@ function findInPage(selector) {
 }
 
 function findButton(selector) {
-  return findInQuickActions(selector) || findInPage(selector);
+  return isFullscreen() ? findInQuickActions(selector) : findInPage(selector);
 }
 
 function findCommentsButton() {
@@ -70,9 +74,12 @@ function initPlayerShortcuts() {
       }
       const comments = document.querySelector("#comments");
       if (!comments) return false;
-      const atComments = comments.getBoundingClientRect().top < window.innerHeight / 2;
+      const atComments =
+        comments.getBoundingClientRect().top < window.innerHeight / 2;
       if (atComments) {
-        document.querySelector("#primary")?.scrollIntoView({ behavior: "smooth" });
+        document
+          .querySelector("#primary")
+          ?.scrollIntoView({ behavior: "smooth" });
       } else {
         comments.scrollIntoView({ behavior: "smooth" });
       }
