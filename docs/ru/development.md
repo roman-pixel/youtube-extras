@@ -6,35 +6,42 @@
 ## Настройка
 
 1. Склонировать репозиторий
-2. Открыть `chrome://extensions/` в Chrome
-3. Включить **Режим разработчика**
-4. Нажать **Загрузить распакованное** → выбрать папку проекта
-5. После любого изменения кода нажать кнопку перезагрузки (↺) на карточке расширения
+2. Открыть `chrome://extensions/`
+3. Включить режим разработчика
+4. Нажать «Загрузить распакованное» → выбрать папку проекта
+5. После каждого изменения кода нажимать кнопку перезагрузки на карточке расширения
 
-## Добавление нового модуля
+## Конвенции
 
-1. Создать `modules/yourFeature.js`
-2. Использовать `registerShortcut(keyTest, action)` из `shortcutCore.js` для привязки клавиш
-3. Передать функции поиска кнопок в `initTooltipWatcher()` для бейджей в тултипах (вызывается один раз в последнем модуле, которому это нужно)
-4. Добавить файл в `content_scripts` в `manifest.json` после `shortcutCore.js`:
-   ```json
-   "css": ["styles/badge.css"],
-   "js": ["modules/shortcutCore.js", "modules/playerShortcuts.js", "modules/yourFeature.js", "content.js"]
-   ```
-5. Если модуль инжектирует UI-элементы, добавить стили в `styles/badge.css` или новый CSS-файл в секцию `css`
-6. Вызвать функцию инициализации из `content.js`
-7. Добавить документацию в `docs/en/yourFeature.md` и `docs/ru/yourFeature.md`
+Сборщика нет. Модули перечислены в `manifest.json` в `content_scripts.js` и выполняются по порядку в одном глобальном scope. Функции и константы верхнего уровня из более ранних файлов доступны в более поздних.
+
+Порядок загрузки важен. Сначала идут базовые модули (`youtubeSelectors.js`, `shortcuts.js`, `i18n.js`), затем `shortcutCore.js`, затем фичи.
+
+## Добавление фичи
+
+1. Добавить новые YouTube-селекторы в `modules/youtubeSelectors.js` в нужную группу.
+2. Добавить новые шорткаты (`code` + `badge`) в `modules/shortcuts.js`.
+3. Добавить строки для пользователя (RU + EN) в `modules/i18n.js`; доступ через `t("key")`.
+4. Создать `modules/yourFeature.js`. Использовать:
+   - `registerShortcut(keyTest, action)` — для привязки клавиш.
+   - `initTooltipWatcher(buttons)` — для бейджей шорткатов в нативных тултипах.
+   - `attachCustomTooltip(el, opts)` — для элементов без нативного тултипа.
+   - `attachSearch(opts)` — для инжекта строки поиска в контейнер со списком.
+5. Добавить файл в `manifest.json` `js` после `shortcutCore.js`.
+6. Если модуль рендерит UI, добавить CSS в `styles/` и подключить в `manifest.json` `css`.
+7. Вызвать init из `content.js`.
+8. Добавить документацию: `docs/en/yourFeature.md` и `docs/ru/yourFeature.md`.
 
 ## Debug-режим
 
-`modules/debugAutoHide.js` отключает автоскрытие контролов плеера YouTube во время разработки. Файл всегда присутствует в репозитории, но активируется только при наличии флага в `localStorage`.
+`modules/debugAutoHide.js` оставляет контролы плеера видимыми. Включается через флаг в localStorage (выполнить в консоли на странице YouTube):
 
-**Включить** (выполнить в консоли на странице YouTube):
 ```js
 localStorage.setItem("ytExtrasDebug", "1")
 ```
 
-**Выключить:**
+Выключить:
+
 ```js
 localStorage.removeItem("ytExtrasDebug")
 ```

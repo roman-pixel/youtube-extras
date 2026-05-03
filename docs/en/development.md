@@ -6,35 +6,42 @@
 ## Setup
 
 1. Clone the repository
-2. Go to `chrome://extensions/` in Chrome
-3. Enable **Developer mode**
-4. Click **Load unpacked** → select the project folder
-5. After any code change, click the reload button (↺) on the extension card
+2. Open `chrome://extensions/`
+3. Enable Developer mode
+4. Load unpacked → select the project folder
+5. Reload the extension card after each code change
 
-## Adding a new module
+## Conventions
 
-1. Create `modules/yourFeature.js`
-2. Use `registerShortcut(keyTest, action)` from `shortcutCore.js` to bind keys
-3. Pass button finders to `initTooltipWatcher()` for tooltip badges (called once in the last module that needs it)
-4. Add the file to `content_scripts` in `manifest.json` after `shortcutCore.js`:
-   ```json
-   "css": ["styles/badge.css"],
-   "js": ["modules/shortcutCore.js", "modules/playerShortcuts.js", "modules/yourFeature.js", "content.js"]
-   ```
-5. If your module injects UI elements, add styles to `styles/badge.css` or a new CSS file listed in `css`
-6. Call your init function from `content.js`
-7. Add documentation to `docs/en/yourFeature.md` and `docs/ru/yourFeature.md`
+The extension has no bundler. Modules are listed in `manifest.json` under `content_scripts.js` and execute in order in the same global scope. Top-level functions and constants in earlier files are accessible to later ones.
+
+Load order matters. Foundational modules (`youtubeSelectors.js`, `shortcuts.js`, `i18n.js`) come first, then `shortcutCore.js`, then features.
+
+## Adding a feature
+
+1. Add new YouTube selectors to `modules/youtubeSelectors.js` under the relevant feature group.
+2. Add new shortcut entries (`code` + `badge`) to `modules/shortcuts.js`.
+3. Add user-facing strings (RU + EN) to `modules/i18n.js`; access via `t("key")`.
+4. Create `modules/yourFeature.js`. Use:
+   - `registerShortcut(keyTest, action)` to bind keys.
+   - `initTooltipWatcher(buttons)` to render shortcut badges in YouTube's tooltips.
+   - `attachCustomTooltip(el, opts)` for elements without a native tooltip.
+   - `attachSearch(opts)` to inject a search bar into a list container.
+5. List the new file in `manifest.json` `js` after `shortcutCore.js`.
+6. If the module renders UI, add a CSS file under `styles/` and list it in `manifest.json` `css`.
+7. Call your init from `content.js`.
+8. Add docs: `docs/en/yourFeature.md` and `docs/ru/yourFeature.md`.
 
 ## Debug mode
 
-`modules/debugAutoHide.js` prevents the YouTube player controls from auto-hiding during development. It is always present in the repo but only activates when a `localStorage` flag is set.
+`modules/debugAutoHide.js` keeps the player controls visible. Activate by setting a localStorage flag in the YouTube page console:
 
-**Enable** (run in the YouTube page console):
 ```js
 localStorage.setItem("ytExtrasDebug", "1")
 ```
 
-**Disable:**
+Disable:
+
 ```js
 localStorage.removeItem("ytExtrasDebug")
 ```

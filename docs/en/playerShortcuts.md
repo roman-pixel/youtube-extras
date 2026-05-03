@@ -3,9 +3,7 @@
 
 # Player Shortcuts
 
-## What it does
-
-Adds keyboard shortcuts for YouTube player actions. Works in both fullscreen and normal mode. Each shortcut is shown as a badge in the button's native tooltip.
+Keyboard shortcuts for the YouTube watch page. All work in fullscreen and normal mode. Layout-independent — `KeyboardEvent.code` is used, not `key`.
 
 ## Shortcuts
 
@@ -14,34 +12,22 @@ Adds keyboard shortcuts for YouTube player actions. Works in both fullscreen and
 | `Shift+C` | Toggle comments panel / scroll to comments | ✓ | ✓ |
 | `Shift+L` | Like / unlike | ✓ | ✓ |
 | `Shift+D` | Dislike / remove dislike | ✓ | ✓ |
-| `Shift+I` | Toggle description panel / scroll to description | ✓ | ✓ |
+| `Shift+I` | Toggle description / scroll to description | ✓ | ✓ |
+| `Shift+S` | Toggle settings menu, focus its search input | ✓ | ✓ |
 
-All shortcuts work on any keyboard layout — `e.code` (physical key position) is used instead of `e.key` (character).
+## Behavior
 
-## How it works
-
-**Fullscreen detection**
-YouTube sets an `is-fullscreen` attribute on the comments panel element when entering fullscreen. This is more reliable than `document.fullscreenElement`, which returns `null` when YouTube uses its own fullscreen implementation.
-
-**Finding buttons**
-Each shortcut searches two contexts in order: the fullscreen quick-action bar (`.ytp-fullscreen-quick-actions`) and the normal watch-page actions bar (`#actions`). Like and dislike are found by their custom element wrappers (`like-button-view-model`, `dislike-button-view-model`), which are language-independent. Comments in fullscreen is found by `aria-label` with a fallback to the unique SVG path of its icon.
-
-**Triggering actions**
-Each shortcut clicks the native YouTube button rather than manipulating DOM state directly. This keeps YouTube's internal state consistent (loaded content, animations, counters). The event is suppressed only when a target is actually found — otherwise the key is passed through to YouTube as normal.
-
-**Comments in normal mode**
-When not in fullscreen, `Shift+C` toggles between the comments section and the player. If `#comments` is already in the upper half of the viewport (i.e. the user has scrolled to comments), the shortcut scrolls back to the very top of the window. Otherwise it scrolls down to `#comments`.
-
-**Description (`Shift+I`)**
-In fullscreen, opens the structured description engagement panel via `yt-player-overlay-video-details-renderer`. If the panel is already expanded (`visibility="ENGAGEMENT_PANEL_VISIBILITY_EXPANDED"`), it is closed via its visibility button. In normal mode the shortcut expands the inline description (`#description-inline-expander #expand`) and scrolls to it; if the description is already in the upper half of the viewport, it scrolls back to the top of the window.
-
-**Scroll offset**
-Scrolling to a section uses `window.scrollTo` with an offset equal to the live `ytd-masthead` height + 5px, so the target sits just below the sticky header. The masthead height is read on each invocation rather than cached, so any future YouTube redesign of the header is handled automatically. Scrolling back to the player is a plain `window.scrollTo({ top: 0 })` since the player always sits at the top of the page.
-
-**Tooltip badges**
-YouTube uses a single shared `yt-popover` for all button tooltips. A `MutationObserver` watches it. Hover tracking via `mouseover` identifies which button is active — so badge injection is language-independent and works regardless of button state (e.g. "Like" vs "Remove like"). Badges appear in both fullscreen and normal mode.
+- **Fullscreen detection.** Reads the `is-fullscreen` attribute from the comments engagement panel. More reliable than `document.fullscreenElement`, which is `null` when YouTube manages fullscreen itself.
+- **Button lookup.** Each shortcut searches `.ytp-fullscreen-quick-actions` first, then `#actions`. Like/Dislike are matched by their custom-element wrappers (language-independent). The fullscreen Comments button is matched by `aria-label` with a fallback to a unique SVG path.
+- **Action.** Shortcuts click native YouTube buttons. The keydown event is suppressed only if a target is found.
+- **Comments scroll (`Shift+C`, normal mode).** If `#comments` is in the upper half of the viewport, scroll to top; otherwise scroll to `#comments`.
+- **Description (`Shift+I`).** Fullscreen: opens the structured description panel, or closes it if already expanded. Normal mode: expands the inline description and scrolls to it; if already in view, scrolls to top.
+- **Scroll offset.** `window.scrollTo` with offset = current `ytd-masthead` height + 5px. Read on each call.
+- **Settings (`Shift+S`).** Clicks `.ytp-settings-button` to toggle the menu. On open, requests focus on the menu's search input via `focusPlayerMenuSearch()`.
+- **Tooltip badges.** A `MutationObserver` patches the shared `yt-popover`. Hover tracking via `mouseover` identifies the active button — language-independent, works for any button state.
 
 ## Files
 
-- `modules/playerShortcuts.js` — button finders and shortcut registration
-- `modules/shortcutCore.js` — shared utilities used by this module
+- `modules/playerShortcuts.js` — registration and button finders
+- `modules/shortcutCore.js` — `registerShortcut`, `initTooltipWatcher`, scroll helpers
+- `modules/shortcuts.js` — shortcut codes and badges

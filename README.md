@@ -3,50 +3,57 @@
 
 # YouTube Extras
 
-A Chrome extension that adds missing keyboard shortcuts and UI improvements to YouTube.
+Chrome extension. Adds keyboard shortcuts and a search bar to the player settings menu.
 
-## Features
+## Shortcuts
 
-All shortcuts work in both fullscreen and normal mode and are shown as badges in the native button tooltips.
+All shortcuts work in fullscreen and normal mode. Each combo is shown as a badge inside YouTube's native button tooltip.
 
 | Shortcut | Action |
 |----------|--------|
-| `Shift+C` | Toggle comments panel / scroll to comments |
+| `Shift+C` | Toggle comments / scroll to comments |
 | `Shift+L` | Like / unlike |
 | `Shift+D` | Dislike / remove dislike |
 | `Shift+I` | Toggle description / scroll to description |
+| `Shift+S` | Toggle settings menu (auto-focuses the search input) |
+| `Shift+F` | Focus the search input inside an open settings menu |
+| `Enter` / `Shift+Enter` | Next / previous match in the search bar |
+| `Escape` | Blur the search input |
+
+## Menu search
+
+The player settings menu (`.ytp-settings-menu`) gets a search bar when a panel has more than 5 items: subtitles, auto-translate language list, etc. Substring filter, match counter, prev/next navigation, scroll to current match. UI strings are localized — Russian for `ru-*` browser locales, English otherwise.
 
 ## Installation
 
-1. Clone or download this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable **Developer mode** (top right toggle)
-4. Click **Load unpacked** and select the project folder
-5. Open YouTube, play a video, enter fullscreen and try the shortcuts
+1. Clone the repository
+2. Open `chrome://extensions/`
+3. Enable Developer mode
+4. Load unpacked → select the project folder
 
 ## Project structure
 
 ```
 youtube-extras/
 ├── manifest.json
-├── content.js                  # Entry point — initializes all modules
+├── content.js                  # Entry point
 ├── styles/
-│   └── badge.css               # Shortcut badge styles injected into YouTube pages
+│   ├── badge.css               # Shortcut badge
+│   ├── tooltip.css             # Custom tooltip
+│   └── search.css              # Menu search bar
 └── modules/
-    ├── shortcutCore.js         # Shared utilities (fullscreen detection, tooltip watcher, shortcut registration)
-    ├── playerShortcuts.js      # All player shortcuts
-    └── debugAutoHide.js        # Keeps player controls visible (activated via localStorage)
+    ├── youtubeSelectors.js     # YouTube DOM selectors
+    ├── shortcuts.js            # Shortcut codes + badges
+    ├── i18n.js                 # User-facing strings (ru/en)
+    ├── shortcutCore.js         # registerShortcut, tooltip watcher, scroll helpers
+    ├── search.js               # Generic search-injector
+    ├── playerShortcuts.js      # Player shortcuts
+    ├── playerMenuSearch.js     # Wires search into the player settings menu
+    └── debugAutoHide.js        # Disables player auto-hide (debug, opt-in)
 ```
 
 ## Documentation
 
 - [Player shortcuts](docs/en/playerShortcuts.md)
+- [Menu search](docs/en/menuSearch.md)
 - [Development guide](docs/en/development.md)
-
-## Contributing
-
-Pull requests are welcome. When adding a new feature:
-1. Create a new file in `modules/`
-2. Use `registerFullscreenShortcut()` and `initTooltipWatcher()` from `shortcutCore.js`
-3. Call your init function from `content.js`
-4. Add documentation to `docs/en/` and `docs/ru/`

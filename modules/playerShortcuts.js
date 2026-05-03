@@ -1,7 +1,8 @@
 /**
  * @module playerShortcuts
  * Shortcuts for quick-action bar (fullscreen) and watch-page actions (normal mode):
- * Shift+C — Comments, Shift+L — Like, Shift+D — Dislike, Shift+I — Description
+ * Shift+C — Comments, Shift+L — Like, Shift+D — Dislike, Shift+I — Description,
+ * Shift+S — Settings (toggles the gear menu and focuses the search input).
  */
 
 const PLAYER_BUTTONS = [

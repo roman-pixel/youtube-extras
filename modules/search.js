@@ -2,11 +2,14 @@
  * @module search
  * Generic search-injector for any DOM container that lists items in bulk.
  * Watches a container, and whenever a panel inside it has more than
- * SEARCH_MIN_ITEMS items, injects an input above that list. Typing highlights
- * matched substrings (substring, case-insensitive). Prev/next buttons and
- * Enter / Shift+Enter cycle through matches; the current match is visually
- * distinct and scrolled into view. Shift+F focuses the input while the panel
- * is open. Browser/YouTube keyboard shortcuts inside the input are suppressed.
+ * SEARCH_MIN_ITEMS items, injects a search bar (input + counter + prev/next
+ * buttons) above that list. Typing highlights matched substrings (substring,
+ * case-insensitive); Enter / Shift+Enter and the buttons cycle through
+ * matches, the current match is visually distinct and scrolled into view.
+ * Shift+F focuses the input, Escape blurs it. Browser/YouTube keyboard
+ * shortcuts inside the input are suppressed. attachSearch returns a
+ * controller with focusActive() that focuses the input as soon as a panel
+ * with one mounts.
  */
 
 const SEARCH_MIN_ITEMS = 5;
