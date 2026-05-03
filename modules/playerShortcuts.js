@@ -35,6 +35,7 @@ function findCommentsButton() {
   const byLabel = findInQuickActions(
     'button[aria-label="Comments"], button[aria-label="Комментарии"]',
   );
+
   if (byLabel) return byLabel;
 
   for (const path of document.querySelectorAll(
@@ -44,22 +45,42 @@ function findCommentsButton() {
       return path.closest("button");
     }
   }
+
   return null;
 }
 
 function clickFirst(...finders) {
   for (const find of finders) {
     const btn = find();
+
     if (btn) {
       btn.click();
+
       return true;
     }
   }
+
   return false;
 }
 
 function shiftOnly(e) {
   return e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey;
+}
+
+function mastheadOffset() {
+  const masthead = document.querySelector("ytd-masthead");
+
+  return (masthead?.getBoundingClientRect().height ?? 0) + 5;
+}
+
+function scrollToSection(el) {
+  const top = el.getBoundingClientRect().top + window.scrollY - mastheadOffset();
+
+  window.scrollTo({ top, behavior: "smooth" });
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function initPlayerShortcuts() {
@@ -68,21 +89,27 @@ function initPlayerShortcuts() {
     () => {
       if (isFullscreen()) {
         const btn = findCommentsButton();
+
         if (!btn) return false;
+
         btn.click();
+
         return true;
       }
+
       const comments = document.querySelector("#comments");
+
       if (!comments) return false;
+
       const atComments =
         comments.getBoundingClientRect().top < window.innerHeight / 2;
+
       if (atComments) {
-        document
-          .querySelector("#primary")
-          ?.scrollIntoView({ behavior: "smooth" });
+        scrollToTop();
       } else {
-        comments.scrollIntoView({ behavior: "smooth" });
+        scrollToSection(comments);
       }
+
       return true;
     },
   );
@@ -94,25 +121,43 @@ function initPlayerShortcuts() {
         const panel = document.querySelector(
           'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-structured-description"]',
         );
-        const isOpen = panel?.getAttribute("visibility") === "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED";
+        const isOpen =
+          panel?.getAttribute("visibility") ===
+          "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED";
+
         if (isOpen) {
           panel.querySelector("#visibility-button button")?.click();
+
           return true;
         }
-        const btn = document.querySelector("yt-player-overlay-video-details-renderer");
+
+        const btn = document.querySelector(
+          "yt-player-overlay-video-details-renderer",
+        );
+
         if (!btn) return false;
+
         btn.click();
+
         return true;
       }
-      const description = document.querySelector("ytd-watch-metadata #description");
+
+      const description = document.querySelector(
+        "ytd-watch-metadata #description",
+      );
+
       if (!description) return false;
-      const atDescription = description.getBoundingClientRect().top < window.innerHeight / 2;
+
+      const atDescription =
+        description.getBoundingClientRect().top < window.innerHeight / 2;
+
       if (atDescription) {
-        document.querySelector("#primary")?.scrollIntoView({ behavior: "smooth" });
+        scrollToTop();
       } else {
         document.querySelector("#description-inline-expander #expand")?.click();
-        description.scrollIntoView({ behavior: "smooth" });
+        scrollToSection(description);
       }
+
       return true;
     },
   );

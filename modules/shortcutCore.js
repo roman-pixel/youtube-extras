@@ -14,8 +14,10 @@ function isFullscreen() {
 
 function createShortcutBadge(text) {
   const span = document.createElement("span");
+
   span.textContent = text;
   span.className = "yt-extras-shortcut-badge";
+
   return span;
 }
 
@@ -30,14 +32,18 @@ function registerShortcut(keyTest, action) {
     "keydown",
     (e) => {
       if (!keyTest(e)) return;
+
       const tag = document.activeElement?.tagName;
+
       if (
         tag === "INPUT" ||
         tag === "TEXTAREA" ||
         document.activeElement?.isContentEditable
       )
         return;
+
       if (!action()) return;
+
       e.preventDefault();
       e.stopPropagation();
     },
@@ -58,11 +64,14 @@ function initTooltipWatcher(buttons) {
     (e) => {
       for (const { find, badge } of buttons) {
         const btn = find();
+
         if (btn && (btn === e.target || btn.contains(e.target))) {
           pendingBadge = badge;
+
           return;
         }
       }
+
       pendingBadge = null;
     },
     true,
@@ -95,13 +104,16 @@ function initTooltipWatcher(buttons) {
   }
 
   const popover = document.querySelector("yt-popover");
+
   if (popover) {
     patchPopover(popover);
+
     return;
   }
 
   new MutationObserver((_, obs) => {
     const popover = document.querySelector("yt-popover");
+
     if (popover) {
       obs.disconnect();
       patchPopover(popover);
