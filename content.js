@@ -1,2 +1,2 @@
 initPlayerShortcuts();
-initSubtitleSearch();
+initPlayerMenuSearch();

@@ -14,7 +14,7 @@
         "modules/shortcutCore.js",
         "modules/search.js",
         "modules/playerShortcuts.js",
-        "modules/subtitleSearch.js",
+        "modules/playerMenuSearch.js",
         "modules/debugAutoHide.js",
         "content.js"
       ],
