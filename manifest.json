@@ -8,6 +8,8 @@
       "matches": ["*://www.youtube.com/*"],
       "css": ["styles/badge.css"],
       "js": [
+        "modules/youtubeSelectors.js",
+        "modules/shortcuts.js",
         "modules/shortcutCore.js",
         "modules/playerShortcuts.js",
         "modules/debugAutoHide.js",

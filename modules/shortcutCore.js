@@ -3,13 +3,27 @@
  * Shared utilities for shortcut modules.
  */
 
-const _FULLSCREEN_PANEL =
-  'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"]';
-
 function isFullscreen() {
   return !!document
-    .querySelector(_FULLSCREEN_PANEL)
-    ?.hasAttribute("is-fullscreen");
+    .querySelector(Selectors.comments.panelFullscreen)
+    ?.hasAttribute(Selectors.player.fullscreenAttr);
+}
+
+function mastheadOffset() {
+  const masthead = document.querySelector(Selectors.chrome.masthead);
+
+  return (masthead?.getBoundingClientRect().height ?? 0) + 5;
+}
+
+function scrollToSection(el) {
+  const top =
+    el.getBoundingClientRect().top + window.scrollY - mastheadOffset();
+
+  window.scrollTo({ top, behavior: "smooth" });
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function createShortcutBadge(text) {
@@ -103,7 +117,7 @@ function initTooltipWatcher(buttons) {
     });
   }
 
-  const popover = document.querySelector("yt-popover");
+  const popover = document.querySelector(Selectors.chrome.popover);
 
   if (popover) {
     patchPopover(popover);
@@ -112,7 +126,7 @@ function initTooltipWatcher(buttons) {
   }
 
   new MutationObserver((_, obs) => {
-    const popover = document.querySelector("yt-popover");
+    const popover = document.querySelector(Selectors.chrome.popover);
 
     if (popover) {
       obs.disconnect();

@@ -4,27 +4,25 @@
  * Shift+C — Comments, Shift+L — Like, Shift+D — Dislike, Shift+I — Description
  */
 
-const COMMENTS_SVG_START = "M1 6a4 4 0 014-4h14a4 4 0 014 4v10";
-
 const PLAYER_BUTTONS = [
-  { selector: "like-button-view-model button", key: "KeyL", badge: "Shift+L" },
-  {
-    selector: "dislike-button-view-model button",
-    key: "KeyD",
-    badge: "Shift+D",
-  },
+  { selector: Selectors.like.button, shortcut: Shortcuts.like },
+  { selector: Selectors.dislike.button, shortcut: Shortcuts.dislike },
 ];
 
 function findInQuickActions(selector) {
   return (
     document
-      .querySelector(".ytp-fullscreen-quick-actions")
+      .querySelector(Selectors.player.fullscreenQuickActions)
       ?.querySelector(selector) ?? null
   );
 }
 
 function findInPage(selector) {
-  return document.querySelector("#actions")?.querySelector(selector) ?? null;
+  return (
+    document
+      .querySelector(Selectors.player.actionsBar)
+      ?.querySelector(selector) ?? null
+  );
 }
 
 function findButton(selector) {
@@ -32,16 +30,16 @@ function findButton(selector) {
 }
 
 function findCommentsButton() {
-  const byLabel = findInQuickActions(
-    'button[aria-label="Comments"], button[aria-label="Комментарии"]',
-  );
+  const byLabel = findInQuickActions(Selectors.comments.buttonLabels);
 
   if (byLabel) return byLabel;
 
   for (const path of document.querySelectorAll(
-    ".ytp-fullscreen-quick-actions button svg path",
+    `${Selectors.player.fullscreenQuickActions} button svg path`,
   )) {
-    if (path.getAttribute("d")?.startsWith(COMMENTS_SVG_START)) {
+    if (
+      path.getAttribute("d")?.startsWith(Selectors.comments.iconSvgPathStart)
+    ) {
       return path.closest("button");
     }
   }
@@ -67,25 +65,9 @@ function shiftOnly(e) {
   return e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey;
 }
 
-function mastheadOffset() {
-  const masthead = document.querySelector("ytd-masthead");
-
-  return (masthead?.getBoundingClientRect().height ?? 0) + 5;
-}
-
-function scrollToSection(el) {
-  const top = el.getBoundingClientRect().top + window.scrollY - mastheadOffset();
-
-  window.scrollTo({ top, behavior: "smooth" });
-}
-
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
 function initPlayerShortcuts() {
   registerShortcut(
-    (e) => shiftOnly(e) && e.code === "KeyC",
+    (e) => shiftOnly(e) && e.code === Shortcuts.comments.code,
     () => {
       if (isFullscreen()) {
         const btn = findCommentsButton();
@@ -97,7 +79,7 @@ function initPlayerShortcuts() {
         return true;
       }
 
-      const comments = document.querySelector("#comments");
+      const comments = document.querySelector(Selectors.comments.section);
 
       if (!comments) return false;
 
@@ -115,24 +97,24 @@ function initPlayerShortcuts() {
   );
 
   registerShortcut(
-    (e) => shiftOnly(e) && e.code === "KeyI",
+    (e) => shiftOnly(e) && e.code === Shortcuts.description.code,
     () => {
       if (isFullscreen()) {
         const panel = document.querySelector(
-          'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-structured-description"]',
+          Selectors.description.panelFullscreen,
         );
         const isOpen =
           panel?.getAttribute("visibility") ===
-          "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED";
+          Selectors.description.panelVisibleAttr;
 
         if (isOpen) {
-          panel.querySelector("#visibility-button button")?.click();
+          panel.querySelector(Selectors.description.panelToggleButton)?.click();
 
           return true;
         }
 
         const btn = document.querySelector(
-          "yt-player-overlay-video-details-renderer",
+          Selectors.description.fullscreenOpenTrigger,
         );
 
         if (!btn) return false;
@@ -142,9 +124,7 @@ function initPlayerShortcuts() {
         return true;
       }
 
-      const description = document.querySelector(
-        "ytd-watch-metadata #description",
-      );
+      const description = document.querySelector(Selectors.description.inline);
 
       if (!description) return false;
 
@@ -154,7 +134,7 @@ function initPlayerShortcuts() {
       if (atDescription) {
         scrollToTop();
       } else {
-        document.querySelector("#description-inline-expander #expand")?.click();
+        document.querySelector(Selectors.description.inlineExpand)?.click();
         scrollToSection(description);
       }
 
@@ -162,18 +142,18 @@ function initPlayerShortcuts() {
     },
   );
 
-  for (const { selector, key } of PLAYER_BUTTONS) {
+  for (const { selector, shortcut } of PLAYER_BUTTONS) {
     registerShortcut(
-      (e) => shiftOnly(e) && e.code === key,
+      (e) => shiftOnly(e) && e.code === shortcut.code,
       () => clickFirst(() => findButton(selector)),
     );
   }
 
   initTooltipWatcher([
-    { find: findCommentsButton, badge: "Shift+C" },
-    ...PLAYER_BUTTONS.map(({ selector, badge }) => ({
+    { find: findCommentsButton, badge: Shortcuts.comments.badge },
+    ...PLAYER_BUTTONS.map(({ selector, shortcut }) => ({
       find: () => findButton(selector),
-      badge,
+      badge: shortcut.badge,
     })),
   ]);
 }
