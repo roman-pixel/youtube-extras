@@ -253,19 +253,27 @@ function _attachToPanel(panel, { itemSelector, labelSelector, placeholder }) {
  */
 function attachSearch(opts) {
   const inputs = new WeakMap();
+  let containerEl = null;
+  let pendingFocus = false;
 
-  function scan(container) {
-    for (const panel of container.querySelectorAll(
+  function scan() {
+    if (!containerEl) return;
+
+    for (const panel of containerEl.querySelectorAll(
       Selectors.playerMenu.panel,
     )) {
       const input = _attachToPanel(panel, opts);
 
       if (input) inputs.set(panel, input);
     }
+
+    if (pendingFocus && _focusActiveNow()) pendingFocus = false;
   }
 
-  function focusActive(container) {
-    for (const panel of container.querySelectorAll(
+  function _focusActiveNow() {
+    if (!containerEl) return false;
+
+    for (const panel of containerEl.querySelectorAll(
       Selectors.playerMenu.panel,
     )) {
       if (panel.offsetParent === null) continue;
@@ -283,10 +291,19 @@ function attachSearch(opts) {
     return false;
   }
 
-  function init(container) {
-    scan(container);
+  function focusActive() {
+    if (_focusActiveNow()) return true;
 
-    new MutationObserver(() => scan(container)).observe(container, {
+    pendingFocus = true;
+
+    return false;
+  }
+
+  function init(container) {
+    containerEl = container;
+    scan();
+
+    new MutationObserver(scan).observe(container, {
       childList: true,
       subtree: true,
     });
@@ -303,7 +320,7 @@ function attachSearch(opts) {
         )
           return;
 
-        if (!focusActive(container)) return;
+        if (!_focusActiveNow()) return;
 
         e.preventDefault();
         e.stopPropagation();
@@ -316,16 +333,16 @@ function attachSearch(opts) {
 
   if (existing) {
     init(existing);
+  } else {
+    new MutationObserver((_, obs) => {
+      const found = document.querySelector(opts.container);
 
-    return;
+      if (found) {
+        obs.disconnect();
+        init(found);
+      }
+    }).observe(document.body, { childList: true, subtree: true });
   }
 
-  new MutationObserver((_, obs) => {
-    const found = document.querySelector(opts.container);
-
-    if (found) {
-      obs.disconnect();
-      init(found);
-    }
-  }).observe(document.body, { childList: true, subtree: true });
+  return { focusActive };
 }

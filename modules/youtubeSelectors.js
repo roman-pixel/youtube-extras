@@ -42,6 +42,7 @@ const Selectors = {
   },
   playerMenu: {
     settingsMenu: ".ytp-settings-menu",
+    settingsButton: ".ytp-settings-button",
     panel: ".ytp-panel",
     panelHeader: ".ytp-panel-header",
     panelMenu: ".ytp-panel-menu",

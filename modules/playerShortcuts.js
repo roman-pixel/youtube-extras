@@ -149,11 +149,32 @@ function initPlayerShortcuts() {
     );
   }
 
+  registerShortcut(
+    (e) => shiftOnly(e) && e.code === Shortcuts.settings.code,
+    () => {
+      const btn = document.querySelector(Selectors.playerMenu.settingsButton);
+
+      if (!btn) return false;
+
+      const willOpen = btn.getAttribute("aria-expanded") !== "true";
+
+      btn.click();
+
+      if (willOpen) focusPlayerMenuSearch();
+
+      return true;
+    },
+  );
+
   initTooltipWatcher([
     { find: findCommentsButton, badge: Shortcuts.comments.badge },
     ...PLAYER_BUTTONS.map(({ selector, shortcut }) => ({
       find: () => findButton(selector),
       badge: shortcut.badge,
     })),
+    {
+      find: () => document.querySelector(Selectors.playerMenu.settingsButton),
+      badge: Shortcuts.settings.badge,
+    },
   ]);
 }
