@@ -110,8 +110,11 @@ function _createSearchUi(placeholder) {
 
   wrapper.append(inputWrap, prevBtn, nextBtn);
 
-  attachCustomTooltip(prevBtn, { badge: "Shift+Enter" });
-  attachCustomTooltip(nextBtn, { badge: "Enter" });
+  attachCustomTooltip(prevBtn, {
+    text: t("searchPrev"),
+    badge: "Shift+Enter",
+  });
+  attachCustomTooltip(nextBtn, { text: t("searchNext"), badge: "Enter" });
 
   for (const ev of ["keydown", "keyup", "keypress"]) {
     wrapper.addEventListener(ev, (e) => e.stopPropagation());
@@ -171,6 +174,14 @@ function _attachToPanel(panel, { itemSelector, labelSelector, placeholder }) {
 
     applyCurrent(query);
     updateCounter(query);
+    updateNavState();
+  }
+
+  function updateNavState() {
+    const disabled = matches.length === 0;
+
+    ui.prevBtn.disabled = disabled;
+    ui.nextBtn.disabled = disabled;
   }
 
   function applyCurrent(query) {
@@ -211,6 +222,13 @@ function _attachToPanel(panel, { itemSelector, labelSelector, placeholder }) {
   });
 
   ui.input.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      ui.input.blur();
+
+      return;
+    }
+
     if (e.key !== "Enter") return;
 
     e.preventDefault();
@@ -219,6 +237,8 @@ function _attachToPanel(panel, { itemSelector, labelSelector, placeholder }) {
 
   ui.prevBtn.addEventListener("click", () => step(-1));
   ui.nextBtn.addEventListener("click", () => step(1));
+
+  updateNavState();
 
   return ui.input;
 }

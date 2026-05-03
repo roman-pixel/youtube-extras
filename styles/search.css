@@ -71,8 +71,13 @@
   display: block;
 }
 
-.yt-extras-search-nav:hover {
+.yt-extras-search-nav:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.18);
+}
+
+.yt-extras-search-nav:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .yt-extras-search-hit {

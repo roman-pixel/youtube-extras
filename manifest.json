@@ -10,6 +10,7 @@
       "js": [
         "modules/youtubeSelectors.js",
         "modules/shortcuts.js",
+        "modules/i18n.js",
         "modules/shortcutCore.js",
         "modules/search.js",
         "modules/playerShortcuts.js",

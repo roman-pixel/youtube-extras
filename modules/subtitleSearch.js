@@ -9,6 +9,6 @@ function initSubtitleSearch() {
     container: Selectors.playerMenu.settingsMenu,
     itemSelector: Selectors.playerMenu.menuItem,
     labelSelector: Selectors.playerMenu.menuItemLabel,
-    placeholder: "Поиск",
+    placeholder: t("searchPlaceholder"),
   });
 }

@@ -48,7 +48,12 @@ function attachCustomTooltip(element, { badge, text }) {
 
   tooltip.className = "yt-extras-tooltip";
 
-  if (text) tooltip.appendChild(document.createTextNode(text));
+  if (text) {
+    const label = document.createElement("span");
+
+    label.textContent = text;
+    tooltip.appendChild(label);
+  }
 
   tooltip.appendChild(createShortcutBadge(badge));
 
