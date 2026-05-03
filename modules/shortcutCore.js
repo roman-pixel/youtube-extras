@@ -36,6 +36,41 @@ function createShortcutBadge(text) {
 }
 
 /**
+ * Attaches a custom tooltip to a specific element. Useful for elements that
+ * have no native YouTube tooltip. Appended into the closest player container
+ * so it remains visible in fullscreen (where body-level children are hidden
+ * by the browser top-layer fullscreen rules).
+ * @param {HTMLElement} element
+ * @param {{ badge: string, text?: string }} opts
+ */
+function attachCustomTooltip(element, { badge, text }) {
+  const tooltip = document.createElement("div");
+
+  tooltip.className = "yt-extras-tooltip";
+
+  if (text) tooltip.appendChild(document.createTextNode(text));
+
+  tooltip.appendChild(createShortcutBadge(badge));
+
+  const parent = element.closest(".html5-video-player") || document.body;
+
+  parent.appendChild(tooltip);
+
+  element.addEventListener("mouseenter", () => {
+    const rect = element.getBoundingClientRect();
+    const parentRect = parent.getBoundingClientRect();
+
+    tooltip.style.top = `${rect.bottom - parentRect.top + 8}px`;
+    tooltip.style.left = `${rect.left - parentRect.left}px`;
+    tooltip.classList.add("yt-extras-tooltip-visible");
+  });
+
+  element.addEventListener("mouseleave", () => {
+    tooltip.classList.remove("yt-extras-tooltip-visible");
+  });
+}
+
+/**
  * Registers a keydown listener that fires outside text inputs.
  * action() must return true if it handled the event — only then is the event suppressed.
  * @param {function(KeyboardEvent): boolean} keyTest

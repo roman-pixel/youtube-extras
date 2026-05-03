@@ -40,4 +40,12 @@ const Selectors = {
     masthead: "ytd-masthead",
     popover: "yt-popover",
   },
+  playerMenu: {
+    settingsMenu: ".ytp-settings-menu",
+    panel: ".ytp-panel",
+    panelHeader: ".ytp-panel-header",
+    panelMenu: ".ytp-panel-menu",
+    menuItem: ".ytp-menuitem",
+    menuItemLabel: ".ytp-menuitem-label",
+  },
 };

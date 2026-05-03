@@ -10,4 +10,5 @@ const Shortcuts = {
   like: { code: "KeyL", badge: "Shift+L" },
   dislike: { code: "KeyD", badge: "Shift+D" },
   description: { code: "KeyI", badge: "Shift+I" },
+  searchFocus: { code: "KeyF", badge: "Shift+F" },
 };

@@ -1,0 +1,25 @@
+.yt-extras-tooltip {
+  position: absolute;
+  z-index: 2147483647;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 8px #000;
+  font-family: Roboto, "Arial", sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease-in;
+  white-space: nowrap;
+}
+
+.yt-extras-tooltip.yt-extras-tooltip-visible {
+  opacity: 1;
+}
+
+.yt-extras-tooltip > .yt-extras-shortcut-badge:first-child {
+  margin-left: 0;
+}
